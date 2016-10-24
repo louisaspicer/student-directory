@@ -31,6 +31,22 @@ def print(students)
   end
 end
 
+def print_d(students)
+  with_d = students.select {|student| student[:name][0].downcase.match('d')}
+
+  if with_d.count == 0
+    puts "No students starting with letter D"
+  else
+    puts "Students starting with the letter D:"
+  end
+
+  with_d.each_with_index do |student, index|
+  puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+  end
+  
+end
+
+
 def print_footer(students)
   puts "Overall, we have #{students.count} great students"
 end
@@ -39,3 +55,5 @@ students = input_students
 print_header
 print(students)
 print_footer(students)
+
+print_d(students)
