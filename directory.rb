@@ -45,11 +45,7 @@ counter = students.count
 index = 0
 
   while counter > 0
-    puts """
-    #{index + 1}: #{students[index][:name]} (#{students[index][:cohort]} cohort)
-    Born in: #{students[index][:country]}, and their hobbies are: #{students[index][:hobbies]}
-    """
-    index += 1
+    puts "#{index + 1}: #{students[index][:name]} (#{students[index][:cohort]} cohort)".center(50)
     counter -= 1
   end
 end
