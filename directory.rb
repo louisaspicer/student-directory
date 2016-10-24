@@ -42,12 +42,13 @@ end
 def print(students)
 
 counter = students.count
-label = 1
 index = 0
 
   while counter > 0
-    puts "#{label}: #{students[index][:name]} (#{students[index][:cohort]} cohort)"
-    label += 1
+    puts """
+    #{index + 1}: #{students[index][:name]} (#{students[index][:cohort]} cohort)
+    Born in: #{students[index][:country]}, and their hobbies are: #{students[index][:hobbies]}
+    """
     index += 1
     counter -= 1
   end
