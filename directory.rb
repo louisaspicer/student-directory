@@ -43,7 +43,21 @@ def print_d(students)
   with_d.each_with_index do |student, index|
   puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
-  
+
+end
+
+def print_short(students)
+  short = students.select {|student| student[:name].length < 12}
+
+  if short == 0
+    puts "No students with name shorter than 12 characters"
+  else
+    puts "Students with name shorter than 12 characters:"
+  end
+
+  short.each_with_index do |student, index|
+    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+  end
 end
 
 
@@ -57,3 +71,4 @@ print(students)
 print_footer(students)
 
 print_d(students)
+print_short(students)
