@@ -9,6 +9,7 @@ def input_students
   name = gets.chomp
   puts "Cohort?"
   cohort = gets.chomp.to_sym
+  cohort.empty? ? cohort = :november : cohort
   puts "Hobbies?"
   hobbies = gets.chomp.to_sym
   puts "Country of birth?"
