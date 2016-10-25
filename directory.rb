@@ -1,33 +1,34 @@
 
 def input_students
   puts "Please enter the details of the students"
-  puts "To finish, just hit return three times"
+  puts "To finish, just hit return twice"
   #create an empty array
   students = []
   #get the first name
   puts "Name?"
   name = gets.chomp
-
+  puts "Cohort?"
+  cohort = gets.chomp.to_sym
   puts "Hobbies?"
-  hobbies = gets.chomp
-
+  hobbies = gets.chomp.to_sym
   puts "Country of birth?"
-  country = gets.chomp
+  country = gets.chomp.to_sym
 
   #while the name is not empty, repeat this code
   #it will be empty if the user hit return for the second time
   while !name.empty? do
-    #add student hash to the array
-    students << {name: name, hobbies: hobbies, country: country, cohort: :november}
+    students << {name: name, hobbies: hobbies, country: country, cohort: cohort}
     puts "Now we have #{students.count} students"
-    #get another name from the user
+
     puts "Name?"
     name = gets.chomp
+    break if name.empty?
+    puts "Cohort?"
+    cohort = gets.chomp.to_sym
     puts "Hobbies?"
-    hobbies = gets.chomp
+    hobbies = gets.chomp.to_sym
     puts "Country of birth?"
-    country = gets.chomp
-
+    country = gets.chomp.to_sym
   end
   #return the array of students
   students
@@ -41,12 +42,11 @@ end
 
 def print(students)
 
-counter = students.count
 index = 0
 
-  while counter > 0
+  while index < students.count
     puts "#{index + 1}: #{students[index][:name]} (#{students[index][:cohort]} cohort)".center(50)
-    counter -= 1
+    index += 1
   end
 end
 
