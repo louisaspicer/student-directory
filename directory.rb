@@ -1,7 +1,7 @@
 
 def input_students
   puts "Please enter the details of the students"
-  puts "To finish, just hit return twice"
+  puts "To finish, just hit return a few times"
   #create an empty array
   students = []
   #get the first name
@@ -38,7 +38,11 @@ def input_students
     country = gets.chomp.to_sym
   end
   #return the array of students
+  if students.count < 1
+  exit(0)
+  else
   students
+  end
 end
 
 
