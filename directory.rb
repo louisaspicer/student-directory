@@ -6,7 +6,8 @@ def input_students
   students = []
   #get the first name
   puts "Name?"
-  name = gets.chomp
+  #another way to delete newline
+  name = gets.delete("\n")
   puts "Cohort?"
   cohort = gets.chomp.to_sym
   cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
