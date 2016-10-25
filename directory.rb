@@ -9,7 +9,7 @@ def input_students
   name = gets.chomp
   puts "Cohort?"
   cohort = gets.chomp.to_sym
-  cohort.empty? || cohort.length > 2 ? cohort = :unknown : cohort
+  cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
   puts "Hobbies?"
   hobbies = gets.chomp.to_sym
   puts "Country of birth?"
@@ -26,6 +26,7 @@ def input_students
     break if name.empty?
     puts "Cohort?"
     cohort = gets.chomp.to_sym
+    cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
     puts "Hobbies?"
     hobbies = gets.chomp.to_sym
     puts "Country of birth?"
@@ -48,6 +49,17 @@ index = 0
   while index < students.count
     puts "#{index + 1}: #{students[index][:name]} (#{students[index][:cohort]} cohort)".center(50)
     index += 1
+  end
+end
+
+def print_cohort(students)
+  puts "Which cohort would you like to see?"
+  cohort = gets.chomp.to_sym
+
+  selected_cohort = students.select {|student| student[:cohort] == cohort }
+
+  selected_cohort.each_with_index do |student, index|
+    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
@@ -92,3 +104,4 @@ print_footer(students)
 
 print_d(students)
 print_short(students)
+print_cohort(students)
