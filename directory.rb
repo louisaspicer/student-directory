@@ -19,7 +19,11 @@ def input_students
   #it will be empty if the user hit return for the second time
   while !name.empty? do
     students << {name: name, hobbies: hobbies, country: country, cohort: cohort}
-    puts "Now we have #{students.count} students"
+    if students.count < 2
+      puts "Now we have #{students.count} student"
+    else
+      puts "Now we have #{students.count} students"
+    end
 
     puts "Name?"
     name = gets.chomp
