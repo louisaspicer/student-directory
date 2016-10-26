@@ -1,6 +1,28 @@
+#create instance variable here to be accessible in any of the methods
 @students = []
 
+#start the program with this - loops the menu and process methods until exit
+def interactive_menu
+  loop do
+    print_menu
+    process(gets.chomp)
+  end
+end
+
+def print_menu
+  puts "Please select an option:"
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
+
+#the parameter is what will be used for the 'case'
+#we want the input from the user so when the method is called, we put gets.chomp
+#as the argument. But this means that selection can be set to anything i.e "1"
 def process(selection)
+  #using the 'case' selection (input) do the following
+  #similar to if/case but uses the === operator to compare
+  #e.g if you want to see if the case is a String: String === 'str' => true
   case selection
     when "1"
      input_students
@@ -13,24 +35,25 @@ def process(selection)
   end
 end
 
-def print_menu
-  puts "Please select an option:"
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "9. Exit"
-end
-
 def show_students
-  print_header
-  print_students
-  print_footer
-end
-
-def interactive_menu
-  loop do
-    print_menu
-    process(gets.chomp)
+  #print header
+  puts "The students of Villains Academy"
+  puts "-------------"
+  #print_students_list
+  index = 0
+    while index < @students.count
+      puts "#{index + 1}: #{@students[index][:name]} (#{@students[index][:cohort]} cohort)".center(50)
+      index += 1
+    end
+  #print_footer
+  if @students.count < 1
+    puts "You have not entered any students"
+    puts "-------------"
+  else
+    puts "Overall, we have #{@students.count} great students"
+    puts "-------------"
   end
+
 end
 
 def input_students
@@ -70,36 +93,23 @@ def input_students
     puts "Country of birth?"
     country = gets.chomp.to_sym
   end
+  #if no students are entered, exit the program
+  if @students.count < 1
+    exit(0)
+  else
   #return the array of students
-  if @students.count < 1
-  exit(0)
-  else
-  @students
+    @students
   end
 end
 
-def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
-end
+#def print_header
+#end
 
-def print_students
-index = 0
-  while index < @students.count
-    puts "#{index + 1}: #{@students[index][:name]} (#{@students[index][:cohort]} cohort)".center(50)
-    index += 1
-  end
-end
+#def print_students
+#end
 
-def print_footer
-  if @students.count < 1
-    puts "You have not entered any students"
-    puts "-------------"
-  else
-    puts "Overall, we have #{@students.count} great students"
-    puts "-------------"
-  end
-end
+#def print_footer
+#end
 
 def print_cohort
   puts "Which cohort would you like to see?"
@@ -140,8 +150,6 @@ def print_short
     puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
-
-
 
 
 interactive_menu
