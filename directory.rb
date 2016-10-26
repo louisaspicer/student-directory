@@ -13,6 +13,7 @@ def print_menu
   puts "Please select an option:"
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 
@@ -28,6 +29,8 @@ def process(selection)
      input_students
     when "2"
       show_students
+    when "3"
+      save_students
     when "9"
       exit
     else
@@ -102,6 +105,31 @@ def input_students
   end
 end
 
+def save_students
+  #open the file for writing and save as 'file' variable to write to.
+  #the second argument is what you want to do with the file
+  #"w" means to write to the file
+  #the function open automatically allows read 'r' access.
+  file = File.open("students.csv", "w")
+  #iterate over the array of students
+  #@students is an array of hashes
+  #the .each method takes each hash element (a students profile)
+  #and takes the necessary data from the hashes
+  #using the hash key accessor, which is a symbol. This collects the string value
+  @students.each do |student|
+    #for each student we create a new array in order to convert to a String
+    #with a comma, using the .join method
+    student_data = [student[:name], student[:cohort]]
+    #save string as a variable
+    csv_line = student_data.join(", ")
+    #call the method puts on the open file, so it writes to the file not the screen
+    #csv_line is the puts' method argument
+    #when we call puts() on it's own, Ruby assumes we want to write it to STDOUT
+    file.puts csv_line
+  end
+  #every time you open a file, it needs to be closed
+  file.close
+end
 #def print_header
 #end
 
