@@ -5,7 +5,7 @@
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -69,14 +69,14 @@ def input_students
   #get the first name
   puts "Name?"
   #another way to delete newline
-  name = gets.delete("\n")
+  name = STDIN.gets.delete("\n")
   puts "Cohort?"
-  cohort = gets.chomp.to_sym
+  cohort = STDIN.gets.chomp.to_sym
   cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
   puts "Hobbies?"
-  hobbies = gets.chomp.to_sym
+  hobbies = STDIN.gets.chomp.to_sym
   puts "Country of birth?"
-  country = gets.chomp.to_sym
+  country = STDIN.gets.chomp.to_sym
 
   #while the name is not empty, repeat this code
   #it will be empty if the user hit return for the second time
@@ -89,15 +89,15 @@ def input_students
     end
 
     puts "Name?"
-    name = gets.chomp
+    name = STDIN.gets.chomp
     break if name.empty?
     puts "Cohort?"
-    cohort = gets.chomp.to_sym
+    cohort = STDIN.gets.chomp.to_sym
     cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
     puts "Hobbies?"
-    hobbies = gets.chomp.to_sym
+    hobbies = STDIN.gets.chomp.to_sym
     puts "Country of birth?"
-    country = gets.chomp.to_sym
+    country = STDIN.gets.chomp.to_sym
   end
   #if no students are entered, exit the program
   if @students.count < 1
@@ -134,8 +134,9 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+#giving the argument a default value
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     #the split at the comma gives us an array with two elements
     #parallel assignment; assigning two variables at the same time
@@ -149,6 +150,18 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first #first argument from the command line
+  return if filename.nil? #get out of method if it isn't given.
+  if File.exists?(filename)
+    load_students(filename)
+      puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
+
 #def print_header
 #end
 
@@ -158,49 +171,45 @@ end
 #def print_footer
 #end
 
-def print_cohort
-  puts "Which cohort would you like to see?"
-  cohort = gets.chomp.to_sym
+#def print_cohort
+#  puts "Which cohort would you like to see?"
+#  cohort = gets.chomp.to_sym
+#
+#  selected_cohort = @students.select {|student| student[:cohort] == cohort }
+#
+#  selected_cohort.each_with_index do |student, index|
+#    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+#  end
+#end
+#
+#def print_d
+#  with_d = @students.select {|student| student[:name][0].downcase.match('d')}
+#
+#  if with_d.count == 0
+#    puts "No students starting with letter D"
+#  else
+#    puts "Students starting with the letter D:"
+#  end
+#
+#  with_d.each_with_index do |student, index|
+#  puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+#  end
+#
+#end
+#
+#def print_short
+#  short = @students.select {|student| student[:name].length < 12}
+#
+#  if short == 0
+#    puts "No students with name shorter than 12 characters"
+#  else
+#    puts "Students with name shorter than 12 characters:"
+#  end
+#
+#  short.each_with_index do |student, index|
+#    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
+#  end
+#end
 
-  selected_cohort = @students.select {|student| student[:cohort] == cohort }
-
-  selected_cohort.each_with_index do |student, index|
-    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
-  end
-end
-
-def print_d
-  with_d = @students.select {|student| student[:name][0].downcase.match('d')}
-
-  if with_d.count == 0
-    puts "No students starting with letter D"
-  else
-    puts "Students starting with the letter D:"
-  end
-
-  with_d.each_with_index do |student, index|
-  puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
-  end
-
-end
-
-def print_short
-  short = @students.select {|student| student[:name].length < 12}
-
-  if short == 0
-    puts "No students with name shorter than 12 characters"
-  else
-    puts "Students with name shorter than 12 characters:"
-  end
-
-  short.each_with_index do |student, index|
-    puts "#{index + 1}: #{student[:name]} (#{student[:cohort]} cohort)"
-  end
-end
-
-
+try_load_students
 interactive_menu
-
-print_d(students)
-print_short(students)
-print_cohort(students)
