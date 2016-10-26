@@ -14,6 +14,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -31,6 +32,8 @@ def process(selection)
       show_students
     when "3"
       save_students
+    when "4"
+      load_students
     when "9"
       exit
     else
@@ -121,7 +124,7 @@ def save_students
     #with a comma, using the .join method
     student_data = [student[:name], student[:cohort]]
     #save string as a variable
-    csv_line = student_data.join(", ")
+    csv_line = student_data.join(",")
     #call the method puts on the open file, so it writes to the file not the screen
     #csv_line is the puts' method argument
     #when we call puts() on it's own, Ruby assumes we want to write it to STDOUT
@@ -130,6 +133,22 @@ def save_students
   #every time you open a file, it needs to be closed
   file.close
 end
+
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    #the split at the comma gives us an array with two elements
+    #parallel assignment; assigning two variables at the same time
+    #if the assigned value is an array, the first variable will get the first element
+    #the second variable will get the second element, and so on.
+    name, cohort = line.chomp.split(",")
+    #the elements are put into a hash with the keys as symbols then
+    #added to the students array.
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+end
+
 #def print_header
 #end
 
