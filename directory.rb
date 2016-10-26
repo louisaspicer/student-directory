@@ -41,6 +41,10 @@ def process(selection)
   end
 end
 
+def push_student_data
+  @students << {name: @name, cohort: @cohort.to_sym, hobbies: @hobbies.to_sym, country: @country.to_sym}
+end
+
 def show_students
   #print header
   puts "The students of Villains Academy"
@@ -68,43 +72,64 @@ def input_students
   #create an empty array
   #get the first name
   puts "Name?"
-  #another way to delete newline
-  name = STDIN.gets.delete("\n")
+  @name = STDIN.gets.chomp
   puts "Cohort?"
-  cohort = STDIN.gets.chomp.to_sym
-  cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
+  @cohort = STDIN.gets.chomp
+  @cohort.empty? || @cohort.length < 2 ? @cohort = :unknown : @cohort
   puts "Hobbies?"
-  hobbies = STDIN.gets.chomp.to_sym
+  @hobbies = STDIN.gets.chomp
   puts "Country of birth?"
-  country = STDIN.gets.chomp.to_sym
+  @country = STDIN.gets.chomp
 
   #while the name is not empty, repeat this code
   #it will be empty if the user hit return for the second time
-  while !name.empty? do
-    @students << {name: name, hobbies: hobbies, country: country, cohort: cohort}
-    if @students.count < 2
-      puts "Now we have #{@students.count} student"
-    else
-      puts "Now we have #{@students.count} students"
-    end
+  while !@name.empty? do
+    push_student_data
+
+      if @students.count < 2
+        puts "Now we have #{@students.count} student"
+      else
+        puts "Now we have #{@students.count} students"
+      end
 
     puts "Name?"
-    name = STDIN.gets.chomp
-    break if name.empty?
+    @name = STDIN.gets.chomp
+    break if @name.empty?
     puts "Cohort?"
-    cohort = STDIN.gets.chomp.to_sym
-    cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
+    @cohort = STDIN.gets.chomp
+    @cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
     puts "Hobbies?"
-    hobbies = STDIN.gets.chomp.to_sym
+    @hobbies = STDIN.gets.chomp
     puts "Country of birth?"
-    country = STDIN.gets.chomp.to_sym
+    @country = STDIN.gets.chomp
   end
-  #if no students are entered, exit the program
-  if @students.count < 1
-    exit(0)
+end
+
+#giving the argument a default value
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
+  file.readlines.each do |line|
+    #the split at the comma gives us an array with two elements
+    #parallel assignment; assigning two variables at the same time
+    #if the assigned value is an array, the first variable will get the first element
+    #the second variable will get the second element, and so on.
+    @name, @cohort, @hobbies, @country = line.chomp.split(",")
+    #the elements are put into a hash with the keys as symbols then
+    #added to the students array.
+    push_student_data
+  end
+  file.close
+end
+
+def try_load_students
+  filename = ARGV.first #first argument from the command line
+  return if filename.nil? #get out of method if it isn't given.
+  if File.exists?(filename)
+    load_students(filename)
+      puts "Loaded #{@students.count} from #{filename}"
   else
-  #return the array of students
-    @students
+    puts "Sorry, #{filename} doesn't exist."
+    exit
   end
 end
 
@@ -122,7 +147,7 @@ def save_students
   @students.each do |student|
     #for each student we create a new array in order to convert to a String
     #with a comma, using the .join method
-    student_data = [student[:name], student[:cohort]]
+    student_data = [student[:name], student[:cohort], student[:hobbies], student[:country]]
     #save string as a variable
     csv_line = student_data.join(",")
     #call the method puts on the open file, so it writes to the file not the screen
@@ -134,33 +159,8 @@ def save_students
   file.close
 end
 
-#giving the argument a default value
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    #the split at the comma gives us an array with two elements
-    #parallel assignment; assigning two variables at the same time
-    #if the assigned value is an array, the first variable will get the first element
-    #the second variable will get the second element, and so on.
-    name, cohort = line.chomp.split(",")
-    #the elements are put into a hash with the keys as symbols then
-    #added to the students array.
-    @students << {name: name, cohort: cohort.to_sym}
-  end
-  file.close
-end
 
-def try_load_students
-  filename = ARGV.first #first argument from the command line
-  return if filename.nil? #get out of method if it isn't given.
-  if File.exists?(filename)
-    load_students(filename)
-      puts "Loaded #{@students.count} from #{filename}"
-  else
-    puts "Sorry, #{filename} doesn't exist."
-    exit
-  end
-end
+
 
 #def print_header
 #end
