@@ -1,20 +1,34 @@
 @students = []
 
-def load_students
-  filename = ARGV.first
-  filename = "students.csv" if filename.nil?
-  if File.exists?(filename)
-    file = File.open(filename, "r")
+def load_students_default
+  @filename = ARGV.first
+  @filename = "students.csv" if @filename.nil?
+
+  check_file_exists
+
+end
+
+def check_file_exists
+  if File.exists?(@filename)
+    file = File.open(@filename, "r")
     file.readlines.each do |line|
       @name, @cohort, @hobby, @country = line.chomp.split(",")
       push_student_data
     end
     file.close
-      puts "Loaded #{@students.count} from #{filename}"
+      puts "Loaded #{@students.count} from #{@filename}"
   else
-    puts "Sorry, #{filename} doesn't exist."
-    exit
+    puts "Sorry, #{@filename} doesn't exist."
+    interactive_menu
   end
+end
+
+def load_file
+  puts "Please enter the filename you would like to load from:"
+  @filename = STDIN.gets.chomp
+
+  check_file_exists
+
 end
 
 def interactive_menu
@@ -28,8 +42,8 @@ def print_menu
   puts "Please select an option:"
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to a file"
+  puts "4. Load a list of students from a chosen file"
   puts "9. Exit"
 end
 
@@ -43,7 +57,7 @@ def process(selection)
     when "3"
       save_students
     when "4"
-      load_students
+      load_file
     when "9"
       exit
     else
@@ -117,15 +131,17 @@ def input_students
 end
 
 def save_students
+  puts "Please enter the filename you would like to save the students to:"
+  filename = STDIN.gets.chomp
 
-  file = File.open("students.csv", "w")
+  file = File.open(filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
-  puts "You have saved students to the students.csv file and the file has been closed."
+  puts "You have saved students to your #{filename} file and the file has been closed."
 end
 
 #def print_header
@@ -177,5 +193,5 @@ end
 #  end
 #end
 
-load_students
+load_students_default
 interactive_menu
