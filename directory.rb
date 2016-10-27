@@ -11,7 +11,10 @@ def load_students_default
 end
 
 def check_file_exists
-  if File.exists?(@filename)
+  if @filename == ""
+    puts "You have not entered a file."
+    interactive_menu
+  elsif File.exists?(@filename)
     CSV.foreach(@filename) do |row|
       @name, @cohort, @hobby, @country = row[0], row[1], row[2], row[3]
       add_student_data
@@ -22,21 +25,6 @@ def check_file_exists
     interactive_menu
   end
 end
-
-
-#def check_file_exists
-#  if File.exists?(@filename)
-#    File.open(@filename, "r") {|f| f.readlines.each do |line|
-#      @name, @cohort, @hobby, @country = line.chomp.split(",")
-#      add_student_data
-#      end
-#    }
-#    puts "Loaded #{@students.count} from #{@filename}"
-#  else
-#    puts "Sorry, #{@filename} doesn't exist."
-#    interactive_menu
-#  end
-#end
 
 def load_file
   puts "Please enter the filename you would like to load from:"
@@ -60,7 +48,6 @@ def print_menu
   puts "4. Load a list of students from a chosen file"
   puts "9. Exit"
 end
-
 
 def process(selection)
   case selection
@@ -144,30 +131,21 @@ def input_students
 
 end
 
-#def save_students
-#  puts "Please enter the filename you would like to save the students to:"
-#  filename = STDIN.gets.chomp
-#
-#  File.open(filename, "w") {|f| @students.each do |student|
-#    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
-#    csv_line = student_data.join(",")
-#    f.puts csv_line
-#  end
-#  }
-#  puts "You have saved students to your #{filename} file and the file has been closed."
-#end
-
 def save_students
   puts "Please enter the filename you would like to save the students to:"
   @filename = STDIN.gets.chomp
-
-  CSV.open(@filename, "wb") do |csv|
-    @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
-    csv << student_data
-    end
+  if @filename == ""
+    puts "You have not entered a file."
+    interactive_menu
+  else
+    CSV.open(@filename, "wb") do |csv|
+      @students.each do |student|
+      student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
+      csv << student_data
+      end
+      end
+    puts "You have saved students to your #{@filename} file and the file has been closed."
   end
-  puts "You have saved students to your #{@filename} file and the file has been closed."
 end
 
 
