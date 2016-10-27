@@ -10,18 +10,31 @@ end
 
 def check_file_exists
   if File.exists?(@filename)
-    file = File.open(@filename, "r")
-    file.readlines.each do |line|
+    File.open(@filename, "r") {|f| f.readlines.each do |line|
       @name, @cohort, @hobby, @country = line.chomp.split(",")
       push_student_data
-    end
-    file.close
-      puts "Loaded #{@students.count} from #{@filename}"
+      end
+    }
+    puts "Loaded #{@students.count} from #{@filename}"
   else
     puts "Sorry, #{@filename} doesn't exist."
     interactive_menu
   end
 end
+#def check_file_exists
+#  if File.exists?(@filename)
+#    file = File.open(@filename, "r")
+#    file.readlines.each do |line|
+#      @name, @cohort, @hobby, @country = line.chomp.split(",")
+#      push_student_data
+#    end
+#    file.close
+#    puts "Loaded #{@students.count} from #{@filename}"
+#  else
+#    puts "Sorry, #{@filename} doesn't exist."
+#    interactive_menu
+#  end
+#end
 
 def load_file
   puts "Please enter the filename you would like to load from:"
@@ -134,15 +147,28 @@ def save_students
   puts "Please enter the filename you would like to save the students to:"
   filename = STDIN.gets.chomp
 
-  file = File.open(filename, "w")
-  @students.each do |student|
+  File.open(filename, "w") {|f| @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
     csv_line = student_data.join(",")
-    file.puts csv_line
+    f.puts csv_line
   end
-  file.close
+  }
   puts "You have saved students to your #{filename} file and the file has been closed."
 end
+
+#def save_students
+#  puts "Please enter the filename you would like to save the students to:"
+#  filename = STDIN.gets.chomp
+#
+#  file = File.open(filename, "w")
+#  @students.each do |student|
+#    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
+#    csv_line = student_data.join(",")
+#    file.puts csv_line
+#    end
+#  file.close
+#  puts "You have saved students to your #{filename} file and the file has been closed."
+#end
 
 #def print_header
 #end
