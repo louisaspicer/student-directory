@@ -6,7 +6,7 @@ def load_students
   if File.exists?(filename)
     file = File.open(filename, "r")
     file.readlines.each do |line|
-      @name, @cohort, @hobbies, @country = line.chomp.split(",")
+      @name, @cohort, @hobby, @country = line.chomp.split(",")
       push_student_data
     end
     file.close
@@ -54,17 +54,23 @@ end
 def request_data
   puts "What is the student's name?"
   @name = STDIN.gets.chomp
+  if @name == ""
+    puts "No student was entered."
+    interactive_menu
+  else
   puts "Which cohort are they in?"
   @cohort = STDIN.gets.chomp
   @cohort.empty? || @cohort.length < 2 ? @cohort = :unknown : @cohort
   puts "What is their favourite hobby?"
-  @hobbies = STDIN.gets.chomp
+  @hobby = STDIN.gets.chomp
   puts "What is their country of birth?"
   @country = STDIN.gets.chomp
+  puts "You have now added #{@name}, in the #{@cohort} cohort, with the hobby #{@hobby}, and who was born in #{@country}."
+  end
 end
 
 def push_student_data
-  @students << {name: @name, cohort: @cohort.to_sym, hobbies: @hobbies.to_sym, country: @country.to_sym}
+  @students << {name: @name, cohort: @cohort.to_sym, hobby: @hobby.to_sym, country: @country.to_sym}
 end
 
 def show_students
@@ -103,20 +109,24 @@ def input_students
 
     request_data
   end
+
+  if @name.empty?
+    puts "You have not added any students"
+  end
+
 end
 
 def save_students
 
   file = File.open("students.csv", "w")
   @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:hobbies], student[:country]]
+    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
+  puts "You have saved students to the students.csv file and the file has been closed."
 end
-
-
 
 #def print_header
 #end
