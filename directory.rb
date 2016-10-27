@@ -1,5 +1,22 @@
 @students = []
 
+def load_students
+  filename = ARGV.first
+  filename = "students.csv" if filename.nil?
+  if File.exists?(filename)
+    file = File.open(filename, "r")
+    file.readlines.each do |line|
+      @name, @cohort, @hobbies, @country = line.chomp.split(",")
+      push_student_data
+    end
+    file.close
+      puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
+
 def interactive_menu
   loop do
     print_menu
@@ -34,33 +51,7 @@ def process(selection)
   end
 end
 
-def push_student_data
-  @students << {name: @name, cohort: @cohort.to_sym, hobbies: @hobbies.to_sym, country: @country.to_sym}
-end
-
-def show_students
-  puts "The students of Villains Academy"
-  puts "-------------"
-
-  index = 0
-    while index < @students.count
-      puts "#{index + 1}: #{@students[index][:name]} (#{@students[index][:cohort]} cohort)".center(50)
-      index += 1
-    end
-
-  if @students.count < 1
-    puts "You have not entered any students"
-    puts "-------------"
-  else
-    puts "Overall, we have #{@students.count} great students"
-    puts "-------------"
-  end
-end
-
-def input_students
-  puts "Please enter the details of the students"
-  puts "To finish, just hit return a few times"
-
+def request_data
   puts "What is the student's name?"
   @name = STDIN.gets.chomp
   puts "Which cohort are they in?"
@@ -70,6 +61,36 @@ def input_students
   @hobbies = STDIN.gets.chomp
   puts "What is their country of birth?"
   @country = STDIN.gets.chomp
+end
+
+def push_student_data
+  @students << {name: @name, cohort: @cohort.to_sym, hobbies: @hobbies.to_sym, country: @country.to_sym}
+end
+
+def show_students
+  puts "The students of Villains Academy"
+  puts "-" * 15
+
+  index = 0
+    while index < @students.count
+      puts "#{index + 1}: #{@students[index][:name]} (#{@students[index][:cohort]} cohort)".center(50)
+      index += 1
+    end
+
+  if @students.count < 1
+    puts "You have not entered any students"
+    puts "-" * 15
+  else
+    puts "Overall, we have #{@students.count} great students"
+    puts "-" * 15
+  end
+end
+
+def input_students
+  puts "Please enter the details of the students"
+  puts "To finish, just hit return a few times"
+
+  request_data
 
   while !@name.empty? do
     push_student_data
@@ -80,71 +101,20 @@ def input_students
         puts "Now we have #{@students.count} students"
       end
 
-    puts "What is the student's name?"
-      @name = STDIN.gets.chomp
-    puts "Which cohort are they in?"
-      @cohort = STDIN.gets.chomp
-      @cohort.empty? || @cohort.length < 2 ? @cohort = :unknown : @cohort
-    puts "What is their favourite hobby?"
-      @hobbies = STDIN.gets.chomp
-    puts "What is their country of birth?"
-      @country = STDIN.gets.chomp
-  end
-end
-
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    #the split at the comma gives us an array with two elements
-    #parallel assignment; assigning two variables at the same time
-    #if the assigned value is an array, the first variable will get the first element
-    #the second variable will get the second element, and so on.
-    @name, @cohort, @hobbies, @country = line.chomp.split(",")
-    #the elements are put into a hash with the keys as symbols then
-    #added to the students array.
-    push_student_data
-  end
-  file.close
-end
-
-def try_load_students
-  filename = ARGV.first #first argument from the command line
-  filename = "students.csv" if filename.nil?
-  if File.exists?(filename)
-    load_students(filename)
-      puts "Loaded #{@students.count} from #{filename}"
-  else
-    puts "Sorry, #{filename} doesn't exist."
-    exit
+    request_data
   end
 end
 
 def save_students
-  #open the file for writing and save as 'file' variable to write to.
-  #the second argument is what you want to do with the file
-  #"w" means to write to the file
-  #the function open automatically allows read 'r' access.
+
   file = File.open("students.csv", "w")
-  #iterate over the array of students
-  #@students is an array of hashes
-  #the .each method takes each hash element (a students profile)
-  #and takes the necessary data from the hashes
-  #using the hash key accessor, which is a symbol. This collects the string value
   @students.each do |student|
-    #for each student we create a new array in order to convert to a String
-    #with a comma, using the .join method
     student_data = [student[:name], student[:cohort], student[:hobbies], student[:country]]
-    #save string as a variable
     csv_line = student_data.join(",")
-    #call the method puts on the open file, so it writes to the file not the screen
-    #csv_line is the puts' method argument
-    #when we call puts() on it's own, Ruby assumes we want to write it to STDOUT
     file.puts csv_line
   end
-  #every time you open a file, it needs to be closed
   file.close
 end
-
 
 
 
@@ -197,5 +167,5 @@ end
 #  end
 #end
 
-try_load_students
+load_students
 interactive_menu
