@@ -1,5 +1,7 @@
+#create instance variable here to be accessible in any of the methods
 @students = []
 
+#start the program with this - loops the menu and process methods until exit
 def interactive_menu
   loop do
     print_menu
@@ -16,8 +18,13 @@ def print_menu
   puts "9. Exit"
 end
 
-
+#the parameter is what will be used for the 'case'
+#we want the input from the user so when the method is called, we put gets.chomp
+#as the argument. But this means that selection can be set to anything i.e "1"
 def process(selection)
+  #using the 'case' selection (input) do the following
+  #similar to if/case but uses the === operator to compare
+  #e.g if you want to see if the case is a String: String === 'str' => true
   case selection
     when "1"
      input_students
@@ -39,15 +46,16 @@ def push_student_data
 end
 
 def show_students
+  #print header
   puts "The students of Villains Academy"
   puts "-------------"
-
+  #print_students_list
   index = 0
     while index < @students.count
       puts "#{index + 1}: #{@students[index][:name]} (#{@students[index][:cohort]} cohort)".center(50)
       index += 1
     end
-
+  #print_footer
   if @students.count < 1
     puts "You have not entered any students"
     puts "-------------"
@@ -55,22 +63,26 @@ def show_students
     puts "Overall, we have #{@students.count} great students"
     puts "-------------"
   end
+
 end
 
 def input_students
   puts "Please enter the details of the students"
   puts "To finish, just hit return a few times"
-
-  puts "What is the student's name?"
+  #create an empty array
+  #get the first name
+  puts "Name?"
   @name = STDIN.gets.chomp
-  puts "Which cohort are they in?"
+  puts "Cohort?"
   @cohort = STDIN.gets.chomp
   @cohort.empty? || @cohort.length < 2 ? @cohort = :unknown : @cohort
-  puts "What is their favourite hobby?"
+  puts "Hobbies?"
   @hobbies = STDIN.gets.chomp
-  puts "What is their country of birth?"
+  puts "Country of birth?"
   @country = STDIN.gets.chomp
 
+  #while the name is not empty, repeat this code
+  #it will be empty if the user hit return for the second time
   while !@name.empty? do
     push_student_data
 
@@ -80,18 +92,20 @@ def input_students
         puts "Now we have #{@students.count} students"
       end
 
-    puts "What is the student's name?"
-      @name = STDIN.gets.chomp
-    puts "Which cohort are they in?"
-      @cohort = STDIN.gets.chomp
-      @cohort.empty? || @cohort.length < 2 ? @cohort = :unknown : @cohort
-    puts "What is their favourite hobby?"
-      @hobbies = STDIN.gets.chomp
-    puts "What is their country of birth?"
-      @country = STDIN.gets.chomp
+    puts "Name?"
+    @name = STDIN.gets.chomp
+    break if @name.empty?
+    puts "Cohort?"
+    @cohort = STDIN.gets.chomp
+    @cohort.empty? || cohort.length < 2 ? cohort = :unknown : cohort
+    puts "Hobbies?"
+    @hobbies = STDIN.gets.chomp
+    puts "Country of birth?"
+    @country = STDIN.gets.chomp
   end
 end
 
+#giving the argument a default value
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
@@ -109,7 +123,7 @@ end
 
 def try_load_students
   filename = ARGV.first #first argument from the command line
-  filename = "students.csv" if filename.nil?
+  return if filename.nil? #get out of method if it isn't given.
   if File.exists?(filename)
     load_students(filename)
       puts "Loaded #{@students.count} from #{filename}"
