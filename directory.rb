@@ -1,4 +1,6 @@
+
 @students = []
+require 'csv'
 
 def load_students_default
   @filename = ARGV.first
@@ -10,25 +12,25 @@ end
 
 def check_file_exists
   if File.exists?(@filename)
-    File.open(@filename, "r") {|f| f.readlines.each do |line|
-      @name, @cohort, @hobby, @country = line.chomp.split(",")
-      push_student_data
+    CSV.foreach(@filename) do |row|
+      @name, @cohort, @hobby, @country = row[0], row[1], row[2], row[3]
+      add_student_data
       end
-    }
     puts "Loaded #{@students.count} from #{@filename}"
   else
     puts "Sorry, #{@filename} doesn't exist."
     interactive_menu
   end
 end
+
+
 #def check_file_exists
 #  if File.exists?(@filename)
-#    file = File.open(@filename, "r")
-#    file.readlines.each do |line|
+#    File.open(@filename, "r") {|f| f.readlines.each do |line|
 #      @name, @cohort, @hobby, @country = line.chomp.split(",")
-#      push_student_data
-#    end
-#    file.close
+#      add_student_data
+#      end
+#    }
 #    puts "Loaded #{@students.count} from #{@filename}"
 #  else
 #    puts "Sorry, #{@filename} doesn't exist."
@@ -41,7 +43,6 @@ def load_file
   @filename = STDIN.gets.chomp
 
   check_file_exists
-
 end
 
 def interactive_menu
@@ -96,7 +97,7 @@ def request_data
   end
 end
 
-def push_student_data
+def add_student_data
   @students << {name: @name, cohort: @cohort.to_sym, hobby: @hobby.to_sym, country: @country.to_sym}
 end
 
@@ -126,7 +127,7 @@ def input_students
   request_data
 
   while !@name.empty? do
-    push_student_data
+    add_student_data
 
       if @students.count < 2
         puts "Now we have #{@students.count} student"
@@ -143,41 +144,32 @@ def input_students
 
 end
 
-def save_students
-  puts "Please enter the filename you would like to save the students to:"
-  filename = STDIN.gets.chomp
-
-  File.open(filename, "w") {|f| @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
-    csv_line = student_data.join(",")
-    f.puts csv_line
-  end
-  }
-  puts "You have saved students to your #{filename} file and the file has been closed."
-end
-
 #def save_students
 #  puts "Please enter the filename you would like to save the students to:"
 #  filename = STDIN.gets.chomp
 #
-#  file = File.open(filename, "w")
-#  @students.each do |student|
+#  File.open(filename, "w") {|f| @students.each do |student|
 #    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
 #    csv_line = student_data.join(",")
-#    file.puts csv_line
-#    end
-#  file.close
+#    f.puts csv_line
+#  end
+#  }
 #  puts "You have saved students to your #{filename} file and the file has been closed."
 #end
 
-#def print_header
-#end
+def save_students
+  puts "Please enter the filename you would like to save the students to:"
+  @filename = STDIN.gets.chomp
 
-#def print_students
-#end
+  CSV.open(@filename, "wb") do |csv|
+    @students.each do |student|
+    student_data = [student[:name], student[:cohort], student[:hobby], student[:country]]
+    csv << student_data
+    end
+  end
+  puts "You have saved students to your #{@filename} file and the file has been closed."
+end
 
-#def print_footer
-#end
 
 #def print_cohort
 #  puts "Which cohort would you like to see?"
